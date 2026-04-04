@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Workers — GeneralWorkers{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/employer.css') }}">
+{% endblock %}
+
+{% block body_class %}theme-emp{% endblock %}
+{% block navbar_class %}navbar-emp{% endblock %}
+{% block logo_accent %}emp{% endblock %}
+{% block nav_class %}navbar-emp{% endblock %}
+
+{% block nav_links %}
+<a href="/employer/dashboard">Dashboard</a>
+<a href="/employer/post-job">Post a Job</a>
+<a href="/employer/browse-workers" class="active">Browse Workers</a>
+<a href="/logout" class="btn btn-ghost btn-sm">Log Out</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="emp-header">
+  <div class="container">
+    <div class="header-inner">
+      <div>
+        <h1>Browse Available Workers</h1>
+        <p>Find workers who are ready to work, filtered by skills and availability.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="padding-top:2rem; padding-bottom:3rem;">
+
+  <!-- Search & Filter Bar -->
+  <form action="/employer/browse-workers" method="get">
+    <div class="filter-bar">
+      <div class="form-group">
+        <label for="search">Search Skills / Name / Location</label>
+        <input
+          type="text"
+          id="search"
+          name="search"
+          class="form-control"
+          placeholder="e.g. painting, cleaning, Cape Town..."
+          value="{{ search }}"
+        >
+      </div>
+      <div class="form-group">
+        <label for="availability">Availability</label>
+        <select id="availability" name="availability" class="form-control">
+          <option value="">Any availability</option>
+          <option value="immediately" {% if availability == 'immediately' %}selected{% endif %}>Available immediately</option>
+          <option value="within-week" {% if availability == 'within-week' %}selected{% endif %}>Within a week</option>
+          <option value="within-month" {% if availability == 'within-month' %}selected{% endif %}>Within a month</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="job_type">Preferred Job Type</label>
+        <select id="job_type" name="job_type" class="form-control">
+          <option value="">Any type</option>
+          <option value="once-off" {% if job_type == 'once-off' %}selected{% endif %}>Once-off</option>
+          <option value="part-time" {% if job_type == 'part-time' %}selected{% endif %}>Part-time</option>
+          <option value="full-time" {% if job_type == 'full-time' %}selected{% endif %}>Full-time</option>
+          <option value="any" {% if job_type == 'any' %}selected{% endif %}>Any type</option>
+        </select>
+      </div>
+      <div class="form-group" style="justify-content:flex-end;">
+        <label class="sr-only" for="search-btn">Search</label>
+        <button type="submit" id="search-btn" class="btn btn-primary-emp" style="height:40px; align-self:flex-end;">
+          Search
+        </button>
+      </div>
+      {% if search or availability or job_type %}
+      <div class="form-group" style="justify-content:flex-end;">
+        <label class="sr-only">Clear</label>
+        <a href="/employer/browse-workers" class="btn btn-ghost" style="height:40px; align-self:flex-end;">Clear</a>
+      </div>
+      {% endif %}
+    </div>
+  </form>
+
+  <!-- Results count -->
+  <p class="text-muted mb-3">
+    {% if workers %}
+      Showing <strong>{{ workers | length }}</strong> available worker{{ 's' if workers | length != 1 else '' }}
+      {% if search %} matching "<strong>{{ search }}</strong>"{% endif %}
+    {% else %}
+      No workers found
+      {% if search or availability or job_type %} for your current filters{% endif %}
+    {% endif %}
+  </p>
+
+  <!-- Workers Grid -->
+  {% if workers %}
+  <div class="grid-3">
+    {% for profile in workers %}
+    <div class="worker-card">
+      <div class="worker-card-header">
+        <div class="worker-avatar">
+          {{ profile.worker.full_name[0].upper() }}
+        </div>
+        <div>
+          <div class="worker-name">{{ profile.worker.full_name }}</div>
+          {% if profile.worker.location %}
+          <div class="worker-location">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="display:inline; vertical-align:middle;">
+              <path d="M6 1C4 1 2.5 2.5 2.5 4.5c0 3 3.5 6 3.5 6S9.5 7.5 9.5 4.5C9.5 2.5 8 1 6 1z" stroke="#888" stroke-width="1.2"/>
+              <circle cx="6" cy="4.5" r="1.2" stroke="#888" stroke-width="1.2"/>
+            </svg>
+            {{ profile.worker.location }}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Skills -->
+      <div class="skill-tags">
+        {% for skill in profile.skills.split(',')[:5] %}
+        {% set s = skill.strip() %}
+        {% if s %}
+        <span class="skill-tag">{{ s }}</span>
+        {% endif %}
+        {% endfor %}
+        {% if profile.skills.split(',') | length > 5 %}
+        <span class="skill-tag" style="background:var(--light-2); color:#666;">+{{ profile.skills.split(',') | length - 5 }} more</span>
+        {% endif %}
+      </div>
+
+      <!-- Meta -->
+      <div style="display:flex; flex-direction:column; gap:0.3rem; margin:0.75rem 0; font-size:0.82rem; color:#666;">
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="#888" stroke-width="1.3"/><path d="M7 4v3l2 1.5" stroke="#888" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Availability:
+          <span class="badge badge-sm
+            {% if profile.availability == 'immediately' %}avail-immediately
+            {% elif profile.availability == 'within-week' %}avail-within-week
+            {% else %}avail-within-month{% endif %}"
+            style="font-size:0.7rem; padding:0.1rem 0.5rem;">
+            {{ profile.availability | replace('-', ' ') | title }}
+          </span>
+        </div>
+        <div>
+          Prefers: <strong>{{ profile.preferred_job_type | replace('-', ' ') | title }}</strong>
+        </div>
+        {% if profile.worker.phone %}
+        <div style="display:flex; align-items:center; gap:0.4rem;">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 2h2.5l1 3-1.5 1 3 3 1-1.5 3 1V11a1 1 0 01-1 1A9 9 0 012 3a1 1 0 011-1z" stroke="#888" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          {{ profile.worker.phone }}
+        </div>
+        {% endif %}
+      </div>
+
+      {% if profile.bio %}
+      <p style="font-size:0.82rem; color:#666; line-height:1.55; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; margin-bottom:0.75rem;">
+        {{ profile.bio }}
+      </p>
+      {% endif %}
+
+      {% if profile.experience %}
+      <p style="font-size:0.82rem; color:#555; line-height:1.5; margin-bottom:0.75rem;">
+        <strong style="color:var(--dark-2);">Experience:</strong> {{ profile.experience[:120] }}{% if profile.experience | length > 120 %}...{% endif %}
+      </p>
+      {% endif %}
+
+      <!-- Contact prompt -->
+      <div style="padding-top:0.75rem; border-top:1px solid var(--light-1); margin-top:auto;">
+        <p style="font-size:0.78rem; color:#aaa; text-align:center;">
+          Post a job and workers can apply, or contact directly if phone is listed.
+        </p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="card">
+    <div class="empty-state">
+      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+        <rect width="56" height="56" rx="28" fill="var(--wkr-light-3)"/>
+        <circle cx="28" cy="22" r="8" stroke="var(--wkr-dark-1)" stroke-width="2"/>
+        <path d="M14 46c0-7.73 6.27-14 14-14s14 6.27 14 14" stroke="var(--wkr-dark-1)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <p>
+        {% if search or availability or job_type %}
+          No workers match your current filters. Try adjusting your search.
+        {% else %}
+          No worker profiles have been created yet.
+        {% endif %}
+      </p>
+      {% if search or availability or job_type %}
+      <a href="/employer/browse-workers" class="btn btn-primary-emp">Clear Filters</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

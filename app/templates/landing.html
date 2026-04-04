@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+
+{% block title %}GeneralWorkers — Find Work. Hire Workers. Done.{% endblock %}
+{% block meta_description %}South Africa's platform for connecting general workers with employers. Post jobs, find work, hire faster.{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/landing.css') }}">
+{% endblock %}
+
+{% block body_class %}landing-page{% endblock %}
+
+{% block navbar %}
+<nav class="navbar landing-nav">
+  <div class="container">
+    <a href="/" class="navbar-logo">
+      General<span class="emp">Workers</span>
+    </a>
+
+    <button class="hamburger" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="navbar-nav">
+      <a href="#how-it-works">How It Works</a>
+      <a href="#features">Features</a>
+      <a href="/login">Log In</a>
+      <a href="/register" class="btn btn-primary-emp btn-sm">Get Started</a>
+    </div>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero Section ──────────────────────────────────────────── -->
+<section class="hero">
+  <!-- Animated Particles -->
+  <div class="hero-particles" aria-hidden="true">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="hero-content container">
+    <div class="hero-badge">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <circle cx="6" cy="6" r="5" fill="#32d0df"/>
+      </svg>
+      South Africa's General Workers Platform
+    </div>
+
+    <h1>
+      Find Work.<br>
+      <span class="highlight-emp">Hire Workers.</span><br>
+      <span class="highlight-wkr">Done.</span>
+    </h1>
+
+    <p class="subtitle">
+      The fastest way to connect general workers with employers.
+      Post a job in minutes. Find work today. No experience in posting — needed.
+    </p>
+
+    <!-- CTA Cards -->
+    <div class="cta-cards">
+      <!-- Employer Card -->
+      <a href="/register?user_type=employer" class="cta-card cta-card-emp">
+        <div class="cta-card-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <path d="M4 28V10l12-6 12 6v18H4z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+            <rect x="12" y="18" width="8" height="10" stroke="white" stroke-width="2"/>
+            <path d="M10 14h2M20 14h2M10 18h2" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>I Need to Hire</h3>
+        <p>Post jobs, browse worker profiles, and hire the right person fast.</p>
+        <span class="cta-arrow">
+          Hire Now
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+
+      <!-- Worker Card -->
+      <a href="/register?user_type=worker" class="cta-card cta-card-wkr">
+        <div class="cta-card-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="10" r="5" stroke="rgba(0,0,0,0.6)" stroke-width="2"/>
+            <path d="M6 28c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="rgba(0,0,0,0.6)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M20 20l3 3 5-5" stroke="rgba(0,0,0,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>I'm Looking for Work</h3>
+        <p>Create your profile, browse available jobs, and apply instantly.</p>
+        <span class="cta-arrow">
+          Find Work
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="rgba(0,0,0,0.6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Wave separator -->
+<div class="wave-separator">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" fill="white">
+    <path d="M0,40 C360,80 1080,0 1440,40 L1440,60 L0,60 Z"/>
+  </svg>
+</div>
+
+<!-- ── How It Works ──────────────────────────────────────────── -->
+<section class="how-it-works" id="how-it-works">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" style="background:var(--emp-light-3); color:var(--emp-dark-2);">Simple Process</span>
+      <h2>How GeneralWorkers Works</h2>
+      <p>Three easy steps — whether you're hiring or looking for work.</p>
+    </div>
+
+    <div class="steps-grid">
+      <!-- Step 1 -->
+      <div class="step-card">
+        <div class="step-number" style="background: linear-gradient(135deg, var(--emp-main), var(--emp-dark-1));">1</div>
+        <h3>Create Your Account</h3>
+        <p>Sign up as an employer or worker in under 2 minutes. No complicated forms.</p>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step-card">
+        <div class="step-number" style="background: linear-gradient(135deg, #0d5a8c, var(--wkr-dark-1));">2</div>
+        <h3>Post or Browse</h3>
+        <p>Employers post jobs. Workers build their profile and browse available positions.</p>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step-card">
+        <div class="step-number" style="background: linear-gradient(135deg, var(--wkr-dark-1), var(--wkr-main));">3</div>
+        <h3>Connect &amp; Work</h3>
+        <p>Workers apply to jobs. Employers review and accept. Get to work, fast.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Wave separator (inverted) -->
+<div class="wave-separator" style="background: white;">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" fill="#ededed">
+    <path d="M0,20 C360,-20 1080,60 1440,20 L1440,60 L0,60 Z"/>
+  </svg>
+</div>
+
+<!-- ── Features ──────────────────────────────────────────────── -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag" style="background:var(--wkr-light-3); color:var(--wkr-dark-2);">Why Choose Us</span>
+      <h2>Everything You Need</h2>
+      <p>Built for South African employers and workers — simple, fast, effective.</p>
+    </div>
+
+    <div class="features-grid">
+      <!-- Feature 1 -->
+      <div class="feature-card">
+        <div class="feature-icon" style="background: var(--emp-light-3);">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path d="M14 3L4 8v12l10 5 10-5V8L14 3z" stroke="var(--emp-dark-1)" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M14 3v17M4 8l10 5 10-5" stroke="var(--emp-dark-1)" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Post Jobs Instantly</h3>
+        <p>Create a job listing in minutes. Specify location, pay rate, and skills needed. Your listing goes live immediately.</p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feature-card">
+        <div class="feature-icon" style="background: var(--wkr-light-3);">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <circle cx="14" cy="10" r="5" stroke="var(--wkr-dark-1)" stroke-width="2"/>
+            <path d="M5 26c0-4.97 4.03-9 9-9s9 4.03 9 9" stroke="var(--wkr-dark-1)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3>Worker Profiles</h3>
+        <p>Workers showcase their skills, availability, and experience. Employers can browse and find the right fit quickly.</p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feature-card">
+        <div class="feature-icon" style="background: var(--emp-light-3);">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path d="M7 7h14M7 12h10M7 17h6" stroke="var(--emp-dark-1)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M3 4h22v20H3z" stroke="var(--emp-dark-1)" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Easy Applications</h3>
+        <p>Workers apply with a single click and an optional message. No lengthy CV uploads or complicated processes.</p>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="feature-card">
+        <div class="feature-icon" style="background: var(--wkr-light-3);">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <circle cx="14" cy="14" r="10" stroke="var(--wkr-dark-1)" stroke-width="2"/>
+            <path d="M14 8v6l4 2" stroke="var(--wkr-dark-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Once-off &amp; Regular Jobs</h3>
+        <p>Post or find once-off, part-time, or full-time work. Flexible job types for every need.</p>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="feature-card">
+        <div class="feature-icon" style="background: var(--emp-light-3);">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path d="M14 4L3 10l11 6 11-6-11-6z" stroke="var(--emp-dark-1)" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M3 18l11 6 11-6M3 14l11 6 11-6" stroke="var(--emp-dark-1)" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Two Dashboards</h3>
+        <p>Dedicated dashboards for employers and workers. See your jobs, applicants, and applications at a glance.</p>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="feature-card">
+        <div class="feature-icon" style="background: var(--wkr-light-3);">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path d="M22 11c0 7-8 13-8 13S6 18 6 11a8 8 0 0116 0z" stroke="var(--wkr-dark-1)" stroke-width="2" stroke-linejoin="round"/>
+            <circle cx="14" cy="11" r="3" stroke="var(--wkr-dark-1)" stroke-width="2"/>
+          </svg>
+        </div>
+        <h3>Location-Based Search</h3>
+        <p>Filter jobs and workers by location. Find work near you or hire someone in your area.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA Banner ─────────────────────────────────────────────── -->
+<section class="cta-banner">
+  <div class="container">
+    <h2>Ready to Get Started?</h2>
+    <p>Join thousands of workers and employers already using GeneralWorkers.</p>
+    <div class="cta-banner-btns">
+      <a href="/register?user_type=employer" class="btn btn-white btn-lg">
+        Post a Job
+      </a>
+      <a href="/register?user_type=worker" class="btn btn-outline-white btn-lg">
+        Find Work
+      </a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block footer %}
+<footer class="landing-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        General<span>Workers</span>
+      </div>
+      <div class="footer-links">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="/login">Log In</a>
+        <a href="/register">Register</a>
+      </div>
+      <div class="footer-copy">
+        &copy; 2026 GeneralWorkers
+      </div>
+    </div>
+  </div>
+</footer>
+{% endblock %}

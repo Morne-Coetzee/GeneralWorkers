@@ -1,0 +1,270 @@
+/* ============================================================
+   EMPLOYER.CSS — Employer (blue) theme styles
+   ============================================================ */
+
+/* ── Employer Navbar ─────────────────────────────────────────── */
+.navbar-emp {
+  border-bottom-color: var(--emp-light-3);
+}
+
+.navbar-emp .navbar-logo span { color: var(--emp-main); }
+
+.navbar-emp .navbar-nav a:hover,
+.navbar-emp .navbar-nav a.active {
+  background: var(--emp-light-3);
+  color: var(--emp-dark-2);
+}
+
+/* ── Page theme accent ───────────────────────────────────────── */
+.theme-emp .form-control:focus {
+  border-color: var(--emp-main);
+  box-shadow: 0 0 0 3px rgba(13,126,195,0.12);
+}
+
+.theme-emp .stat-card .stat-value {
+  color: var(--emp-main);
+}
+
+/* ── Dashboard Header ────────────────────────────────────────── */
+.emp-header {
+  background: linear-gradient(120deg, var(--emp-dark-2), var(--emp-dark-1));
+  color: var(--white);
+  padding: 2.5rem 0;
+}
+
+.emp-header h1 {
+  color: var(--white);
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+}
+
+.emp-header p {
+  color: rgba(255,255,255,0.75);
+  margin-top: 0.35rem;
+}
+
+.emp-header .header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* ── Employer Stats ──────────────────────────────────────────── */
+.emp-stat .stat-value { color: var(--emp-main); }
+
+/* ── Job Card ────────────────────────────────────────────────── */
+.job-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem;
+  border-left: 4px solid var(--emp-main);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.job-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.job-card.inactive {
+  border-left-color: var(--light-2);
+  opacity: 0.75;
+}
+
+.job-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.job-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--dark-1);
+  margin: 0;
+}
+
+.job-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.82rem;
+  color: #666;
+}
+
+.job-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.job-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--light-1);
+}
+
+/* ── Application Row ─────────────────────────────────────────── */
+.application-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--light-1);
+  flex-wrap: wrap;
+}
+
+.application-item:last-child {
+  border-bottom: none;
+}
+
+.application-worker {
+  flex: 1;
+  min-width: 150px;
+}
+
+.application-worker strong {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--dark-1);
+}
+
+.application-worker span {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.application-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+/* ── Worker Browse Card ──────────────────────────────────────── */
+.worker-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border-top: 3px solid var(--wkr-main);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.worker-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.worker-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.worker-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--wkr-main), var(--wkr-dark-1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--white);
+  flex-shrink: 0;
+}
+
+.worker-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--dark-1);
+}
+
+.worker-location {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.75rem 0;
+}
+
+.skill-tag {
+  background: var(--wkr-light-3);
+  color: var(--wkr-dark-2);
+  padding: 0.2rem 0.65rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ── Post Job Form ────────────────────────────────────────────── */
+.post-job-container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.post-job-form {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 2.5rem;
+}
+
+@media (max-width: 480px) {
+  .post-job-form { padding: 1.5rem; }
+}
+
+.form-section-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--emp-main);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--emp-light-3);
+}
+
+/* ── Filter Bar ──────────────────────────────────────────────── */
+.filter-bar {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-bar .form-group {
+  margin-bottom: 0;
+  flex: 1;
+  min-width: 160px;
+}
+
+.filter-bar .form-group label {
+  font-size: 0.78rem;
+}
+
+.filter-bar .form-control {
+  height: 40px;
+  padding: 0 0.85rem;
+}

@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}Worker Dashboard — GeneralWorkers{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/worker.css') }}">
+{% endblock %}
+
+{% block body_class %}theme-wkr{% endblock %}
+{% block navbar_class %}navbar-wkr{% endblock %}
+{% block logo_accent %}wkr{% endblock %}
+{% block nav_class %}navbar-wkr{% endblock %}
+
+{% block nav_links %}
+<a href="/worker/dashboard" class="active">Dashboard</a>
+<a href="/worker/browse-jobs">Browse Jobs</a>
+<a href="/worker/profile">My Profile</a>
+<a href="/logout" class="btn btn-ghost btn-sm">Log Out</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="wkr-header">
+  <div class="container">
+    <div class="header-inner">
+      <div>
+        <h1>Welcome, {{ user.full_name.split()[0] }}</h1>
+        <p>Find work, manage your applications, and update your profile.</p>
+      </div>
+      <a href="/worker/browse-jobs" class="btn btn-white btn-lg">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <circle cx="8" cy="8" r="5.5" stroke="var(--wkr-dark-2)" stroke-width="2"/>
+          <path d="M12.5 12.5l3 3" stroke="var(--wkr-dark-2)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Browse Jobs
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="padding-top:2rem; padding-bottom:3rem;">
+
+  <!-- Flash messages -->
+  {% if flash_success %}
+  <div class="flash flash-success" role="alert">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#065f46" stroke-width="1.5"/><path d="M5.5 9l2.5 2.5 4.5-5" stroke="#065f46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    {{ flash_success }}
+  </div>
+  {% endif %}
+  {% if flash_error %}
+  <div class="flash flash-error" role="alert">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#991b1b" stroke-width="1.5"/><path d="M9 5v4M9 12v.5" stroke="#991b1b" stroke-width="2" stroke-linecap="round"/></svg>
+    {{ flash_error }}
+  </div>
+  {% endif %}
+
+  <!-- Profile Status -->
+  <div class="profile-status-card {% if not profile %}profile-incomplete{% endif %}">
+    <div class="profile-status-icon">
+      {% if profile %}
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="11" r="5" stroke="white" stroke-width="2"/>
+        <path d="M5 25c0-4.97 4.03-9 9-9s9 4.03 9 9" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M17 14l2 2 4-4" stroke="#32d0df" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      {% else %}
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <circle cx="14" cy="11" r="5" stroke="white" stroke-width="2"/>
+        <path d="M5 25c0-4.97 4.03-9 9-9s9 4.03 9 9" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M14 18v4M14 24v.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      {% endif %}
+    </div>
+    <div class="profile-status-text" style="flex:1;">
+      {% if profile %}
+        <h3>Profile Complete</h3>
+        <p>Your profile is visible to employers.
+          {% if profile.is_available %}You are marked as available for work.{% else %}You are currently marked as unavailable.{% endif %}
+        </p>
+      {% else %}
+        <h3>Profile Not Set Up</h3>
+        <p>Create your profile so employers can discover you and you can apply for jobs.</p>
+      {% endif %}
+    </div>
+    <a href="/worker/profile" class="btn {% if profile %}btn-outline-wkr{% else %}btn-primary-wkr{% endif %}">
+      {{ 'Edit Profile' if profile else 'Create Profile' }}
+    </a>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card wkr-stat">
+      <div class="stat-value">{{ applications | length }}</div>
+      <div class="stat-label">Applications</div>
+    </div>
+    <div class="stat-card wkr-stat">
+      <div class="stat-value">{{ applications | selectattr('status', 'eq', 'pending') | list | length }}</div>
+      <div class="stat-label">Pending</div>
+    </div>
+    <div class="stat-card wkr-stat">
+      <div class="stat-value">{{ applications | selectattr('status', 'eq', 'accepted') | list | length }}</div>
+      <div class="stat-label">Accepted</div>
+    </div>
+    <div class="stat-card wkr-stat">
+      <div class="stat-value">{{ recent_jobs | selectattr('id', 'not in', applied_job_ids) | list | length }}</div>
+      <div class="stat-label">New Jobs</div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+    {% if screen_width is defined and screen_width >= 900 %}
+    <div style="grid-template-columns: 1fr 1fr;"></div>
+    {% endif %}
+
+    <!-- My Applications -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 style="font-size:1.25rem;">My Applications</h2>
+        <a href="/worker/browse-jobs" class="btn btn-primary-wkr btn-sm">Browse More Jobs</a>
+      </div>
+
+      {% if applications %}
+      <div style="display:flex; flex-direction:column; gap:0.75rem;">
+        {% for app in applications %}
+        <div class="my-application-card">
+          <div class="my-application-info">
+            <strong>{{ app.job.title }}</strong>
+            <span>
+              {{ app.job.location }}
+              {% if app.job.employer %}— by {{ app.job.employer.full_name }}{% endif %}
+              <br>
+              Applied {{ app.created_at.strftime('%d %b %Y') }}
+            </span>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+            <span class="badge badge-{{ app.job.job_type }}">{{ app.job.job_type | replace('-', ' ') | title }}</span>
+            <span class="badge badge-{{ app.status }}">{{ app.status | title }}</span>
+            {% if app.status == 'pending' %}
+            <form action="/worker/application/{{ app.id }}/withdraw" method="post">
+              <button type="submit" class="btn btn-ghost btn-sm" title="Withdraw application">Withdraw</button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="card">
+        <div class="empty-state">
+          <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+            <rect width="52" height="52" rx="26" fill="var(--wkr-light-3)"/>
+            <path d="M14 38V18l12-7 12 7v20H14z" stroke="var(--wkr-dark-1)" stroke-width="2" stroke-linejoin="round"/>
+            <rect x="20" y="28" width="12" height="10" stroke="var(--wkr-dark-1)" stroke-width="2"/>
+          </svg>
+          <p>You haven't applied to any jobs yet.</p>
+          <a href="/worker/browse-jobs" class="btn btn-primary-wkr">Browse Jobs</a>
+        </div>
+      </div>
+      {% endif %}
+    </section>
+
+    <!-- Recent Job Listings -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 style="font-size:1.25rem;">Recent Job Listings</h2>
+        <a href="/worker/browse-jobs" class="btn btn-outline-wkr btn-sm">View All</a>
+      </div>
+
+      {% if recent_jobs %}
+      <div style="display:flex; flex-direction:column; gap:0.75rem;">
+        {% for job in recent_jobs %}
+        <div class="card" style="border-left:3px solid {% if job.id in applied_job_ids %}var(--wkr-main){% else %}var(--emp-main){% endif %};">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.5rem;">
+            <div>
+              <h4 style="color:var(--dark-1); margin-bottom:0.2rem;">{{ job.title }}</h4>
+              <p style="font-size:0.8rem; color:#888; margin:0;">
+                {{ job.location }} • {{ job.pay_rate }} •
+                <span class="badge badge-{{ job.job_type }}" style="font-size:0.68rem;">{{ job.job_type | replace('-', ' ') | title }}</span>
+              </p>
+            </div>
+            <div>
+              {% if job.id in applied_job_ids %}
+              <span class="badge badge-wkr">Applied</span>
+              {% else %}
+              <a href="/worker/browse-jobs" class="btn btn-primary-wkr btn-sm">Apply</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="card">
+        <div class="empty-state">
+          <p>No job listings available right now. Check back soon.</p>
+        </div>
+      </div>
+      {% endif %}
+    </section>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile — GeneralWorkers{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', path='css/worker.css') }}">
+{% endblock %}
+
+{% block body_class %}theme-wkr{% endblock %}
+{% block navbar_class %}navbar-wkr{% endblock %}
+{% block logo_accent %}wkr{% endblock %}
+{% block nav_class %}navbar-wkr{% endblock %}
+
+{% block nav_links %}
+<a href="/worker/dashboard">Dashboard</a>
+<a href="/worker/browse-jobs">Browse Jobs</a>
+<a href="/worker/profile" class="active">My Profile</a>
+<a href="/logout" class="btn btn-ghost btn-sm">Log Out</a>
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="wkr-header">
+  <div class="container">
+    <div class="header-inner">
+      <div>
+        <h1>{{ 'Edit Your Profile' if profile else 'Create Your Profile' }}</h1>
+        <p>Let employers know your skills and availability.</p>
+      </div>
+      <a href="/worker/dashboard" class="btn btn-outline-wkr btn-sm" style="border-color:rgba(255,255,255,0.5); color:white;">
+        ← Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container" style="padding-top:2.5rem; padding-bottom:3rem;">
+  <div class="profile-form-container">
+
+    {% if flash_success %}
+    <div class="flash flash-success" role="alert">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#065f46" stroke-width="1.5"/><path d="M5.5 9l2.5 2.5 4.5-5" stroke="#065f46" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      {{ flash_success }}
+    </div>
+    {% endif %}
+    {% if flash_error %}
+    <div class="flash flash-error" role="alert">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" stroke="#991b1b" stroke-width="1.5"/><path d="M9 5v4M9 12v.5" stroke="#991b1b" stroke-width="2" stroke-linecap="round"/></svg>
+      {{ flash_error }}
+    </div>
+    {% endif %}
+
+    <!-- Account info card -->
+    <div class="card mb-3" style="background:var(--wkr-light-3); border:none; display:flex; align-items:center; gap:1rem; flex-wrap:wrap;">
+      <div class="worker-avatar" style="width:56px; height:56px; font-size:1.25rem; background:linear-gradient(135deg, var(--wkr-main), var(--wkr-dark-1));">
+        {{ user.full_name[0].upper() }}
+      </div>
+      <div>
+        <div style="font-weight:700; color:var(--wkr-dark-2); font-size:1rem;">{{ user.full_name }}</div>
+        <div style="font-size:0.82rem; color:var(--wkr-dark-1);">{{ user.email }}{% if user.location %} • {{ user.location }}{% endif %}</div>
+      </div>
+    </div>
+
+    <div class="profile-form">
+      <form action="/worker/profile" method="post" novalidate>
+
+        <!-- Availability -->
+        <div class="form-section-title-wkr">Availability & Job Preference</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="availability">Availability *</label>
+            <select id="availability" name="availability" class="form-control" required>
+              <option value="" disabled {% if not profile %}selected{% endif %}>Select availability...</option>
+              <option value="immediately" {% if profile and profile.availability == 'immediately' %}selected{% endif %}>Available immediately</option>
+              <option value="within-week" {% if profile and profile.availability == 'within-week' %}selected{% endif %}>Available within a week</option>
+              <option value="within-month" {% if profile and profile.availability == 'within-month' %}selected{% endif %}>Available within a month</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="preferred_job_type">Preferred Job Type *</label>
+            <select id="preferred_job_type" name="preferred_job_type" class="form-control" required>
+              <option value="" disabled {% if not profile %}selected{% endif %}>Select preference...</option>
+              <option value="once-off" {% if profile and profile.preferred_job_type == 'once-off' %}selected{% endif %}>Once-off</option>
+              <option value="part-time" {% if profile and profile.preferred_job_type == 'part-time' %}selected{% endif %}>Part-time</option>
+              <option value="full-time" {% if profile and profile.preferred_job_type == 'full-time' %}selected{% endif %}>Full-time</option>
+              <option value="any" {% if profile and profile.preferred_job_type == 'any' %}selected{% endif %}>Any (open to all types)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="toggle-label">
+            <input
+              type="checkbox"
+              name="is_available"
+              value="on"
+              {% if not profile or profile.is_available %}checked{% endif %}
+            >
+            I am currently available for work
+          </label>
+          <div class="form-hint">Uncheck this if you're not available right now — you'll be hidden from employer searches.</div>
+        </div>
+
+        <!-- Skills -->
+        <div class="form-section-title-wkr" style="margin-top:1.5rem;">Skills & Experience</div>
+
+        <div class="form-group">
+          <label for="skills">Skills *</label>
+          <input
+            type="text"
+            id="skills"
+            name="skills"
+            class="form-control"
+            placeholder="e.g. Gardening, Painting, Tiling, Cleaning, Driving (comma-separated)"
+            required
+            maxlength="500"
+            value="{{ profile.skills if profile else '' }}"
+          >
+          <div class="form-hint">List your skills separated by commas. Be specific and honest.</div>
+        </div>
+
+        <div class="form-group">
+          <label for="experience">Work Experience</label>
+          <textarea
+            id="experience"
+            name="experience"
+            class="form-control"
+            placeholder="Describe your previous work experience, how long you've been doing it, and what you're good at..."
+            rows="4"
+            maxlength="1000"
+          >{{ profile.experience if profile and profile.experience else '' }}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="bio">About Me</label>
+          <textarea
+            id="bio"
+            name="bio"
+            class="form-control"
+            placeholder="A brief description about yourself — what kind of worker you are, your work ethic, etc."
+            rows="3"
+            maxlength="500"
+          >{{ profile.bio if profile and profile.bio else '' }}</textarea>
+        </div>
+
+        <!-- Submit -->
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:2rem;">
+          <button type="submit" class="btn btn-primary-wkr btn-lg" style="flex:1; min-width:160px;">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M3 9l4 4 8-8" stroke="rgba(0,0,0,0.6)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            {{ 'Save Changes' if profile else 'Create Profile' }}
+          </button>
+          <a href="/worker/dashboard" class="btn btn-ghost btn-lg" style="flex:1; min-width:160px;">
+            Cancel
+          </a>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Tips card -->
+    <div class="card mt-3" style="background:var(--wkr-light-3); border:none;">
+      <h4 style="color:var(--wkr-dark-2); margin-bottom:0.75rem; font-size:0.9rem; text-transform:uppercase; letter-spacing:0.06em;">
+        Tips for a Strong Profile
+      </h4>
+      <ul style="list-style:none; padding:0; display:flex; flex-direction:column; gap:0.5rem;">
+        <li style="font-size:0.85rem; color:var(--wkr-dark-1); display:flex; gap:0.5rem;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0; margin-top:2px;"><circle cx="8" cy="8" r="6" fill="var(--wkr-dark-1)"/><path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          List as many relevant skills as you have — more skills = more opportunities
+        </li>
+        <li style="font-size:0.85rem; color:var(--wkr-dark-1); display:flex; gap:0.5rem;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0; margin-top:2px;"><circle cx="8" cy="8" r="6" fill="var(--wkr-dark-1)"/><path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Set your availability accurately so employers can plan ahead
+        </li>
+        <li style="font-size:0.85rem; color:var(--wkr-dark-1); display:flex; gap:0.5rem;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0; margin-top:2px;"><circle cx="8" cy="8" r="6" fill="var(--wkr-dark-1)"/><path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Keep your profile updated — mark yourself unavailable when busy
+        </li>
+        <li style="font-size:0.85rem; color:var(--wkr-dark-1); display:flex; gap:0.5rem;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0; margin-top:2px;"><circle cx="8" cy="8" r="6" fill="var(--wkr-dark-1)"/><path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Add your phone number to your account so employers can call you directly
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

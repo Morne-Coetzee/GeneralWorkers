@@ -1,0 +1,292 @@
+/* ============================================================
+   WORKER.CSS — Worker (teal) theme styles
+   ============================================================ */
+
+/* ── Worker Navbar ───────────────────────────────────────────── */
+.navbar-wkr {
+  border-bottom-color: var(--wkr-light-3);
+}
+
+.navbar-wkr .navbar-logo span { color: var(--wkr-dark-1); }
+
+.navbar-wkr .navbar-nav a:hover,
+.navbar-wkr .navbar-nav a.active {
+  background: var(--wkr-light-3);
+  color: var(--wkr-dark-2);
+}
+
+/* ── Page theme accent ───────────────────────────────────────── */
+.theme-wkr .form-control:focus {
+  border-color: var(--wkr-main);
+  box-shadow: 0 0 0 3px rgba(50,208,223,0.18);
+}
+
+.theme-wkr .stat-card .stat-value {
+  color: var(--wkr-dark-1);
+}
+
+/* ── Worker Dashboard Header ─────────────────────────────────── */
+.wkr-header {
+  background: linear-gradient(120deg, var(--wkr-dark-2), var(--wkr-dark-1));
+  color: var(--white);
+  padding: 2.5rem 0;
+}
+
+.wkr-header h1 {
+  color: var(--white);
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+}
+
+.wkr-header p {
+  color: rgba(255,255,255,0.75);
+  margin-top: 0.35rem;
+}
+
+.wkr-header .header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* ── Worker Stats ────────────────────────────────────────────── */
+.wkr-stat .stat-value { color: var(--wkr-dark-1); }
+
+/* ── Profile Status Card ─────────────────────────────────────── */
+.profile-status-card {
+  background: linear-gradient(135deg, var(--wkr-light-3), var(--wkr-light-2));
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.profile-status-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--wkr-dark-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.profile-status-text h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--wkr-dark-2);
+}
+
+.profile-status-text p {
+  font-size: 0.85rem;
+  color: var(--wkr-dark-1);
+}
+
+.profile-incomplete {
+  background: linear-gradient(135deg, #fff3cd, #fef9e7);
+}
+
+.profile-incomplete .profile-status-icon {
+  background: #f59e0b;
+}
+
+.profile-incomplete .profile-status-text h3 { color: #92400e; }
+.profile-incomplete .profile-status-text p  { color: #b45309; }
+
+/* ── Job Browse Card ─────────────────────────────────────────── */
+.job-browse-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border-top: 3px solid var(--emp-main);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.job-browse-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+.job-browse-card.applied {
+  border-top-color: var(--wkr-main);
+  opacity: 0.85;
+}
+
+.job-browse-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.job-browse-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--dark-1);
+}
+
+.job-browse-employer {
+  font-size: 0.82rem;
+  color: #888;
+  margin-bottom: 0.75rem;
+}
+
+.job-pay-rate {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--emp-light-3);
+  color: var(--emp-dark-2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.job-description-preview {
+  font-size: 0.875rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0.75rem 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Apply Modal / inline form ────────────────────────────────── */
+.apply-form {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--light-1);
+}
+
+.apply-form .form-group {
+  margin-bottom: 0.75rem;
+}
+
+/* ── Application status card ─────────────────────────────────── */
+.my-application-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  transition: box-shadow var(--transition);
+}
+
+.my-application-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.my-application-info {
+  flex: 1;
+  min-width: 180px;
+}
+
+.my-application-info strong {
+  display: block;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--dark-1);
+  margin-bottom: 0.2rem;
+}
+
+.my-application-info span {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* ── Profile Form ────────────────────────────────────────────── */
+.profile-form-container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.profile-form {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 2.5rem;
+}
+
+@media (max-width: 480px) {
+  .profile-form { padding: 1.5rem; }
+}
+
+.form-section-title-wkr {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--wkr-dark-1);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--wkr-light-3);
+}
+
+/* ── Availability badge colors ───────────────────────────────── */
+.avail-immediately { background: #d1fae5; color: #065f46; }
+.avail-within-week { background: #fef3c7; color: #92400e; }
+.avail-within-month { background: #ede9fe; color: #5b21b6; }
+
+/* ── Skills list ─────────────────────────────────────────────── */
+.skill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.skill-pill {
+  background: var(--wkr-light-3);
+  color: var(--wkr-dark-2);
+  padding: 0.2rem 0.7rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ── Filter Bar (worker theme) ───────────────────────────────── */
+.filter-bar-wkr {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-bar-wkr .form-group {
+  margin-bottom: 0;
+  flex: 1;
+  min-width: 160px;
+}
+
+.filter-bar-wkr .form-group label {
+  font-size: 0.78rem;
+}
+
+.filter-bar-wkr .form-control:focus {
+  border-color: var(--wkr-main);
+  box-shadow: 0 0 0 3px rgba(50,208,223,0.18);
+}
+
+.filter-bar-wkr .form-control {
+  height: 40px;
+  padding: 0 0.85rem;
+}
