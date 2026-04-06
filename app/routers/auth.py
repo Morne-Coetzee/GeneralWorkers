@@ -17,12 +17,18 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY", "")
 
 
+def _prepare(password: str) -> str:
+    """SHA-256 pre-hash to bypass bcrypt's 72-byte limit."""
+    import hashlib
+    return hashlib.sha256(password.encode()).hexdigest()
+
+
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    return pwd_context.hash(_prepare(password))
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    return pwd_context.verify(_prepare(plain), hashed)
 
 
 def get_current_user(request: Request, db: Session = Depends(get_db)) -> Optional[User]:
