@@ -1,9 +1,10 @@
 import os
+import hashlib
+import bcrypt
 from fastapi import APIRouter, Request, Form, Depends
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from passlib.context import CryptContext
 from typing import Optional
 
 from app.database import get_db
@@ -12,23 +13,21 @@ from app.models import User
 router = APIRouter(tags=["auth"])
 
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "..", "templates"))
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY", "")
 
 
-def _prepare(password: str) -> str:
-    """SHA-256 pre-hash to bypass bcrypt's 72-byte limit."""
-    import hashlib
-    return hashlib.sha256(password.encode()).hexdigest()
+def _prepare(password: str) -> bytes:
+    """SHA-256 pre-hash → always 64 bytes, safely under bcrypt's 72-byte limit."""
+    return hashlib.sha256(password.encode()).hexdigest().encode()
 
 
 def hash_password(password: str) -> str:
-    return pwd_context.hash(_prepare(password))
+    return bcrypt.hashpw(_prepare(password), bcrypt.gensalt()).decode()
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(_prepare(plain), hashed)
+    return bcrypt.checkpw(_prepare(plain), hashed.encode())
 
 
 def get_current_user(request: Request, db: Session = Depends(get_db)) -> Optional[User]:
