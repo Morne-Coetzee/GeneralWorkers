@@ -55,8 +55,7 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
     flash_success = request.session.pop("flash_success", None)
     flash_error = request.session.pop("flash_error", None)
 
-    return templates.TemplateResponse("employer/dashboard.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "employer/dashboard.html", {
         "user": user,
         "job_postings": job_postings,
         "recent_applications": recent_applications,
@@ -76,8 +75,7 @@ async def post_job_page(request: Request, db: Session = Depends(get_db)):
     if not user:
         return RedirectResponse(url="/login", status_code=302)
     flash_error = request.session.pop("flash_error", None)
-    return templates.TemplateResponse("employer/post_job.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "employer/post_job.html", {
         "user": user,
         "flash_error": flash_error,
     })
@@ -203,8 +201,7 @@ async def browse_workers(
 
     workers = query.filter(WorkerProfile.is_available == True).order_by(WorkerProfile.created_at.desc()).all()
 
-    return templates.TemplateResponse("employer/browse_workers.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "employer/browse_workers.html", {
         "user": user,
         "workers": workers,
         "search": search,

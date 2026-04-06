@@ -113,7 +113,7 @@
   #register-form-step {
     display: none;
     width: 100%;
-    max-width: 520px;
+    max-width: 560px;
   }
 
   .register-card {
@@ -181,6 +181,80 @@
     color: var(--wkr-dark-2);
   }
 
+  /* ID type toggle */
+  .id-type-toggle {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .id-type-btn {
+    flex: 1;
+    padding: 0.45rem 0.5rem;
+    border: 2px solid var(--light-2);
+    border-radius: var(--radius-sm);
+    background: white;
+    font-family: var(--font);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .id-type-btn.active {
+    border-color: var(--emp-main);
+    color: var(--emp-main);
+    background: var(--emp-light-3);
+  }
+
+  .theme-wkr .id-type-btn.active {
+    border-color: var(--wkr-main);
+    color: var(--wkr-dark-1);
+    background: var(--wkr-light-3);
+  }
+
+  .id-hint {
+    font-size: 0.75rem;
+    color: #999;
+    margin-top: 0.3rem;
+  }
+
+  /* Google location field */
+  .location-wrapper {
+    position: relative;
+  }
+
+  .location-wrapper .location-icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #aaa;
+  }
+
+  .location-wrapper .form-control {
+    padding-left: 2.5rem;
+  }
+
+  /* Autocomplete dropdown override */
+  .pac-container {
+    font-family: var(--font) !important;
+    border-radius: 0 0 var(--radius-md) var(--radius-md) !important;
+    border-top: none !important;
+    box-shadow: var(--shadow-md) !important;
+  }
+
+  .pac-item {
+    font-family: var(--font) !important;
+    font-size: 0.875rem !important;
+    padding: 0.6rem 1rem !important;
+    cursor: pointer;
+  }
+
+  .pac-item:hover { background: var(--light-1) !important; }
+
   .auth-footer-text {
     text-align: center;
     font-size: 0.875rem;
@@ -193,15 +267,10 @@
     font-weight: 600;
   }
 
-  .auth-footer-text a:hover {
-    text-decoration: underline;
-  }
+  .auth-footer-text a:hover { text-decoration: underline; }
 
   /* Pre-select if user_type provided */
-  {% if user_type == "employer" %}
-  #user-type-step { display: none !important; }
-  #register-form-step { display: block !important; }
-  {% elif user_type == "worker" %}
+  {% if user_type == "employer" or user_type == "worker" %}
   #user-type-step { display: none !important; }
   #register-form-step { display: block !important; }
   {% endif %}
@@ -237,8 +306,8 @@
       <div class="user-type-card {% if user_type == 'worker' %}selected{% endif %}" data-type="worker" role="button" tabindex="0">
         <div class="type-card-icon">
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <circle cx="16" cy="11" r="6" stroke="rgba(0,0,0,0.5)" stroke-width="2"/>
-            <path d="M6 29c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="rgba(0,0,0,0.5)" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="16" cy="11" r="6" stroke="white" stroke-width="2"/>
+            <path d="M6 29c0-5.523 4.477-10 10-10s10 4.477 10 10" stroke="white" stroke-width="2" stroke-linecap="round"/>
           </svg>
         </div>
         <h3>Worker</h3>
@@ -279,38 +348,73 @@
       </div>
       {% endif %}
 
-      <form action="/register" method="post" novalidate>
+      <form action="/register" method="post" id="register-form" novalidate>
         <input type="hidden" name="user_type" id="user_type_hidden" value="{{ user_type or 'employer' }}">
 
+        <!-- Name row -->
         <div class="form-row">
           <div class="form-group">
-            <label for="full_name">Full Name *</label>
-            <input type="text" id="full_name" name="full_name" class="form-control" placeholder="John Smith" required autocomplete="name">
+            <label for="full_name">First Name *</label>
+            <input type="text" id="full_name" name="full_name" class="form-control"
+              placeholder="John" required autocomplete="given-name">
           </div>
           <div class="form-group">
-            <label for="phone">Phone Number</label>
-            <input type="tel" id="phone" name="phone" class="form-control" placeholder="082 000 0000" autocomplete="tel">
+            <label for="surname">Surname *</label>
+            <input type="text" id="surname" name="surname" class="form-control"
+              placeholder="Smith" required autocomplete="family-name">
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="email">Email Address *</label>
-          <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required autocomplete="email">
+        <!-- Contact row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" class="form-control"
+              placeholder="you@example.com" required autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number *</label>
+            <input type="tel" id="phone" name="phone" class="form-control"
+              placeholder="082 000 0000" required autocomplete="tel">
+          </div>
         </div>
 
+        <!-- ID / Passport -->
         <div class="form-group">
-          <label for="location">Location</label>
-          <input type="text" id="location" name="location" class="form-control" placeholder="e.g. Cape Town, Western Cape">
+          <label>ID / Passport Number *</label>
+          <div class="id-type-toggle">
+            <button type="button" class="id-type-btn active" id="btn-id">SA ID Number</button>
+            <button type="button" class="id-type-btn" id="btn-passport">Passport Number</button>
+          </div>
+          <input type="text" id="id_number" name="id_number" class="form-control"
+            placeholder="1234567890123" required
+            inputmode="numeric" maxlength="13" autocomplete="off">
+          <p class="id-hint" id="id-hint">Enter your 13-digit South African ID number</p>
         </div>
 
+        <!-- Location (Google Places) -->
+        <div class="form-group">
+          <label for="location">Location *</label>
+          <div class="location-wrapper">
+            <svg class="location-icon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M9 1.5C6.515 1.5 4.5 3.515 4.5 6c0 3.75 4.5 10.5 4.5 10.5S13.5 9.75 13.5 6c0-2.485-2.015-4.5-4.5-4.5zm0 6a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" fill="#aaa"/>
+            </svg>
+            <input type="text" id="location" name="location" class="form-control"
+              placeholder="Start typing your city or area..." required autocomplete="off">
+          </div>
+        </div>
+
+        <!-- Password row -->
         <div class="form-row">
           <div class="form-group">
             <label for="password">Password *</label>
-            <input type="password" id="password" name="password" class="form-control" placeholder="Min. 6 characters" required autocomplete="new-password">
+            <input type="password" id="password" name="password" class="form-control"
+              placeholder="Min. 6 characters" required autocomplete="new-password">
           </div>
           <div class="form-group">
             <label for="confirm_password">Confirm Password *</label>
-            <input type="password" id="confirm_password" name="confirm_password" class="form-control" placeholder="Repeat password" required autocomplete="new-password">
+            <input type="password" id="confirm_password" name="confirm_password" class="form-control"
+              placeholder="Repeat password" required autocomplete="new-password">
           </div>
         </div>
 
@@ -331,55 +435,131 @@
 {% block footer %}{% endblock %}
 
 {% block extra_js %}
+{% if google_maps_api_key %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&libraries=places&callback=initAutocomplete" async defer></script>
+{% endif %}
+
 <script>
-  // Handle keyboard activation for type cards
-  document.querySelectorAll('.user-type-card').forEach(function(card) {
-    card.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        card.click();
+  // ── Google Places Autocomplete ─────────────────────────────────────────────
+  function initAutocomplete() {
+    var input = document.getElementById('location');
+    var autocomplete = new google.maps.places.Autocomplete(input, {
+      types: ['(cities)'],
+      fields: ['formatted_address', 'name', 'geometry']
+    });
+    autocomplete.addListener('place_changed', function() {
+      var place = autocomplete.getPlace();
+      if (place.formatted_address) {
+        input.value = place.formatted_address;
       }
     });
+  }
+
+  // ── ID / Passport toggle ───────────────────────────────────────────────────
+  var idInput   = document.getElementById('id_number');
+  var idHint    = document.getElementById('id-hint');
+  var btnId     = document.getElementById('btn-id');
+  var btnPass   = document.getElementById('btn-passport');
+  var isIdMode  = true;
+
+  btnId.addEventListener('click', function() {
+    isIdMode = true;
+    btnId.classList.add('active');
+    btnPass.classList.remove('active');
+    idInput.placeholder = '1234567890123';
+    idInput.setAttribute('inputmode', 'numeric');
+    idInput.maxLength = 13;
+    idHint.textContent = 'Enter your 13-digit South African ID number';
+    idInput.value = '';
+    idInput.focus();
   });
 
-  // Update submit button style based on selected type
-  const userTypeInput = document.getElementById('user_type_hidden');
-  const submitBtn = document.getElementById('submit-btn');
-  const themeIndicator = document.getElementById('theme-indicator');
-  const formStep = document.getElementById('register-form-step');
+  btnPass.addEventListener('click', function() {
+    isIdMode = false;
+    btnPass.classList.add('active');
+    btnId.classList.remove('active');
+    idInput.placeholder = 'e.g. A12345678';
+    idInput.setAttribute('inputmode', 'text');
+    idInput.maxLength = 20;
+    idHint.textContent = 'Enter your passport number (6–20 characters)';
+    idInput.value = '';
+    idInput.focus();
+  });
+
+  // Restrict SA ID to digits only
+  idInput.addEventListener('input', function() {
+    if (isIdMode) {
+      this.value = this.value.replace(/\D/g, '');
+    }
+  });
+
+  // ── Type card selection + theme ────────────────────────────────────────────
+  var userTypeInput   = document.getElementById('user_type_hidden');
+  var submitBtn       = document.getElementById('submit-btn');
+  var themeIndicator  = document.getElementById('theme-indicator');
+  var formStep        = document.getElementById('register-form-step');
+  var typeStep        = document.getElementById('user-type-step');
+  var idTypeBtns      = document.querySelectorAll('.id-type-btn');
 
   function updateTheme(type) {
     if (type === 'worker') {
-      if (submitBtn) {
-        submitBtn.className = submitBtn.className.replace(/btn-primary-\w+/, 'btn-primary-wkr');
-      }
-      if (themeIndicator) {
-        themeIndicator.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="var(--wkr-dark-1)"/></svg> Worker Account';
-        themeIndicator.style.background = 'var(--wkr-light-3)';
-        themeIndicator.style.color = 'var(--wkr-dark-2)';
-      }
-      if (formStep) {
-        formStep.className = formStep.className.replace(/theme-\w+/, 'theme-wkr');
-      }
+      submitBtn && submitBtn.className.replace(/btn-primary-\w+/, '') && (submitBtn.className = submitBtn.className.replace(/btn-primary-\w+/, 'btn-primary-wkr'));
+      themeIndicator && (themeIndicator.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="var(--wkr-dark-1)"/></svg> Worker Account');
+      themeIndicator && (themeIndicator.style.background = 'var(--wkr-light-3)');
+      themeIndicator && (themeIndicator.style.color = 'var(--wkr-dark-2)');
+      formStep && (formStep.className = formStep.className.replace(/theme-\w+/, 'theme-wkr'));
     } else {
-      if (submitBtn) {
-        submitBtn.className = submitBtn.className.replace(/btn-primary-\w+/, 'btn-primary-emp');
-      }
-      if (themeIndicator) {
-        themeIndicator.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="var(--emp-main)"/></svg> Employer Account';
-        themeIndicator.style.background = 'var(--emp-light-3)';
-        themeIndicator.style.color = 'var(--emp-dark-2)';
-      }
-      if (formStep) {
-        formStep.className = formStep.className.replace(/theme-\w+/, 'theme-emp');
-      }
+      submitBtn && (submitBtn.className = submitBtn.className.replace(/btn-primary-\w+/, 'btn-primary-emp'));
+      themeIndicator && (themeIndicator.innerHTML = '<svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="var(--emp-main)"/></svg> Employer Account');
+      themeIndicator && (themeIndicator.style.background = 'var(--emp-light-3)');
+      themeIndicator && (themeIndicator.style.color = 'var(--emp-dark-2)');
+      formStep && (formStep.className = formStep.className.replace(/theme-\w+/, 'theme-emp'));
     }
   }
 
   document.querySelectorAll('.user-type-card').forEach(function(card) {
     card.addEventListener('click', function() {
-      updateTheme(card.dataset.type);
+      var type = card.dataset.type;
+      userTypeInput.value = type;
+      updateTheme(type);
+      typeStep.style.display = 'none';
+      formStep.style.display = 'block';
     });
+    card.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
+    });
+  });
+
+  document.getElementById('back-to-type').addEventListener('click', function() {
+    formStep.style.display = 'none';
+    typeStep.style.display = 'block';
+  });
+
+  // ── Client-side validation ─────────────────────────────────────────────────
+  document.getElementById('register-form').addEventListener('submit', function(e) {
+    var id = idInput.value.trim();
+    if (isIdMode && id.length !== 13) {
+      e.preventDefault();
+      idInput.setCustomValidity('SA ID number must be exactly 13 digits.');
+      idInput.reportValidity();
+      return;
+    }
+    if (!isIdMode && (id.length < 6 || id.length > 20)) {
+      e.preventDefault();
+      idInput.setCustomValidity('Passport number must be 6–20 characters.');
+      idInput.reportValidity();
+      return;
+    }
+    idInput.setCustomValidity('');
+
+    var loc = document.getElementById('location').value.trim();
+    if (!loc) {
+      e.preventDefault();
+      document.getElementById('location').setCustomValidity('Please select a location.');
+      document.getElementById('location').reportValidity();
+      return;
+    }
+    document.getElementById('location').setCustomValidity('');
   });
 </script>
 {% endblock %}

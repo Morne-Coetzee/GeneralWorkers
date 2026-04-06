@@ -36,13 +36,15 @@ app.include_router(employer.router)
 app.include_router(worker.router)
 
 
+GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY", "")
+
+
 @app.get("/")
 async def landing(request: Request):
-    # If already logged in, redirect to the correct dashboard
     user_id = request.session.get("user_id")
     user_type = request.session.get("user_type")
     if user_id and user_type == "employer":
         return RedirectResponse(url="/employer/dashboard", status_code=302)
     if user_id and user_type == "worker":
         return RedirectResponse(url="/worker/dashboard", status_code=302)
-    return templates.TemplateResponse("landing.html", {"request": request})
+    return templates.TemplateResponse(request, "landing.html")

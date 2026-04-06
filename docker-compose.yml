@@ -22,6 +22,7 @@ services:
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/generalworkers
       SECRET_KEY: gw-secret-k3y-ch4ng3-in-pr0duct10n-x9z2m7p4q1
+      GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY:-}
     depends_on:
       db:
         condition: service_healthy

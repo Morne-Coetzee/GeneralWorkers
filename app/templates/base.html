@@ -14,7 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <!-- Base CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', path='css/base.css') }}">
+  <link rel="stylesheet" href="/static/css/base.css">
 
   <!-- Page-specific CSS -->
   {% block extra_css %}{% endblock %}
@@ -60,7 +60,7 @@
   {% endblock %}
 
   <!-- JavaScript -->
-  <script src="{{ url_for('static', path='js/main.js') }}"></script>
+  <script src="/static/js/main.js"></script>
   {% block extra_js %}{% endblock %}
 </body>
 </html>

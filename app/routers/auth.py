@@ -14,6 +14,8 @@ router = APIRouter(tags=["auth"])
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "..", "templates"))
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY", "")
+
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
@@ -49,8 +51,13 @@ def require_worker(request: Request, db: Session = Depends(get_db)) -> User:
 @router.get("/register", response_class=HTMLResponse)
 async def register_page(request: Request, user_type: Optional[str] = None):
     return templates.TemplateResponse(
+        request,
         "auth/register.html",
-        {"request": request, "user_type": user_type or "", "error": request.session.pop("flash_error", None)}
+        {
+            "user_type": user_type or "",
+            "error": request.session.pop("flash_error", None),
+            "google_maps_api_key": GOOGLE_MAPS_API_KEY,
+        }
     )
 
 
@@ -61,43 +68,55 @@ async def register(
     password: str = Form(...),
     confirm_password: str = Form(...),
     full_name: str = Form(...),
+    surname: str = Form(...),
     user_type: str = Form(...),
-    phone: str = Form(""),
-    location: str = Form(""),
+    phone: str = Form(...),
+    id_number: str = Form(...),
+    location: str = Form(...),
     db: Session = Depends(get_db)
 ):
-    # Validation
+    def error(msg):
+        request.session["flash_error"] = msg
+        return RedirectResponse(url=f"/register?user_type={user_type}", status_code=302)
+
     if password != confirm_password:
-        request.session["flash_error"] = "Passwords do not match."
-        return RedirectResponse(url=f"/register?user_type={user_type}", status_code=302)
-
+        return error("Passwords do not match.")
     if len(password) < 6:
-        request.session["flash_error"] = "Password must be at least 6 characters."
-        return RedirectResponse(url=f"/register?user_type={user_type}", status_code=302)
-
+        return error("Password must be at least 6 characters.")
     if user_type not in ("employer", "worker"):
         request.session["flash_error"] = "Invalid user type."
         return RedirectResponse(url="/register", status_code=302)
 
-    # Check duplicate email
+    # Validate ID or passport number
+    id_clean = id_number.strip().replace(" ", "")
+    if id_clean.isdigit():
+        if len(id_clean) != 13:
+            return error("SA ID number must be exactly 13 digits.")
+    else:
+        if not id_clean.isalnum() or len(id_clean) < 6 or len(id_clean) > 20:
+            return error("Passport number must be 6–20 alphanumeric characters.")
+
+    if not location.strip():
+        return error("Please select a location.")
+
     existing = db.query(User).filter(User.email == email.lower()).first()
     if existing:
-        request.session["flash_error"] = "An account with that email already exists."
-        return RedirectResponse(url=f"/register?user_type={user_type}", status_code=302)
+        return error("An account with that email already exists.")
 
     user = User(
         email=email.lower().strip(),
         password_hash=hash_password(password),
         user_type=user_type,
         full_name=full_name.strip(),
-        phone=phone.strip() or None,
-        location=location.strip() or None,
+        surname=surname.strip(),
+        phone=phone.strip(),
+        id_number=id_clean,
+        location=location.strip(),
     )
     db.add(user)
     db.commit()
     db.refresh(user)
 
-    # Log them in immediately
     request.session["user_id"] = user.id
     request.session["user_type"] = user.user_type
     request.session["full_name"] = user.full_name
@@ -113,8 +132,9 @@ async def register(
 @router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse(
+        request,
         "auth/login.html",
-        {"request": request, "error": request.session.pop("flash_error", None)}
+        {"error": request.session.pop("flash_error", None)}
     )
 
 

@@ -53,8 +53,7 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
     flash_success = request.session.pop("flash_success", None)
     flash_error = request.session.pop("flash_error", None)
 
-    return templates.TemplateResponse("worker/dashboard.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "worker/dashboard.html", {
         "user": user,
         "profile": profile,
         "applications": applications,
@@ -77,8 +76,7 @@ async def profile_page(request: Request, db: Session = Depends(get_db)):
     flash_success = request.session.pop("flash_success", None)
     flash_error = request.session.pop("flash_error", None)
 
-    return templates.TemplateResponse("worker/create_profile.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "worker/create_profile.html", {
         "user": user,
         "profile": profile,
         "flash_success": flash_success,
@@ -173,8 +171,7 @@ async def browse_jobs(
     flash_success = request.session.pop("flash_success", None)
     flash_error = request.session.pop("flash_error", None)
 
-    return templates.TemplateResponse("worker/browse_jobs.html", {
-        "request": request,
+    return templates.TemplateResponse(request, "worker/browse_jobs.html", {
         "user": user,
         "jobs": jobs,
         "applied_job_ids": applied_job_ids,

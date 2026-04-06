@@ -12,8 +12,10 @@ class User(Base):
     password_hash = Column(String(255), nullable=False)
     user_type = Column(String(20), nullable=False)  # "employer" or "worker"
     full_name = Column(String(255), nullable=False)
-    phone = Column(String(50), nullable=True)
-    location = Column(String(255), nullable=True)
+    surname = Column(String(255), nullable=False, server_default="")
+    phone = Column(String(50), nullable=False, server_default="")
+    id_number = Column(String(50), nullable=False, server_default="")
+    location = Column(String(500), nullable=False, server_default="")
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     # Relationships
