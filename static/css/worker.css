@@ -241,7 +241,7 @@
 .avail-within-week { background: #fef3c7; color: #92400e; }
 .avail-within-month { background: #ede9fe; color: #5b21b6; }
 
-/* ── Skills list ─────────────────────────────────────────────── */
+/* ── Skills display (browse/dashboard) ───────────────────────── */
 .skill-list {
   display: flex;
   flex-wrap: wrap;
@@ -249,13 +249,14 @@
   margin-top: 0.5rem;
 }
 
-.skill-pill {
+.skill-badge {
   background: var(--wkr-light-3);
   color: var(--wkr-dark-2);
   padding: 0.2rem 0.7rem;
   border-radius: 99px;
   font-size: 0.75rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 /* ── Filter Bar (worker theme) ───────────────────────────────── */
@@ -291,21 +292,21 @@
   padding: 0 0.85rem;
 }
 
-/* ── Skills pill grid ──────────────────────────────────────────────────────── */
+/* ── Skills pill grid (profile form) ──────────────────────────── */
 .skills-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 5px;
   padding: 0.75rem;
   border: 1.5px solid var(--light-2);
   border-radius: var(--radius-md);
   background: #fafafa;
 }
 
-.skill-pill {
+.skills-grid .skill-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  white-space: nowrap;
   padding: 0.4rem 0.85rem;
   border: 1.5px solid var(--light-2);
   border-radius: 99px;
@@ -315,29 +316,26 @@
   font-weight: 500;
   color: var(--dark-2);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
   user-select: none;
 }
 
-.skill-pill input[type="checkbox"] {
-  display: none;
+.skills-grid .skill-pill input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
 }
 
-.skill-pill:hover {
+.skills-grid .skill-pill:hover {
   border-color: var(--wkr-main);
   color: var(--wkr-dark-1);
   background: var(--wkr-light-3);
 }
 
-.skill-pill.checked,
-.skill-pill:has(input:checked) {
+.skills-grid .skill-pill.checked {
   border-color: var(--wkr-dark-1);
   background: var(--wkr-dark-1);
   color: white;
-}
-
-.skill-pill.checked::before,
-.skill-pill:has(input:checked)::before {
-  content: '✓ ';
-  font-size: 0.75rem;
 }

@@ -146,7 +146,7 @@
           {% for skill in job.skills_required.split(',') %}
           {% set s = skill.strip() %}
           {% if s %}
-          <span class="skill-pill">{{ s }}</span>
+          <span class="skill-badge">{{ s }}</span>
           {% endif %}
           {% endfor %}
         </div>
