@@ -107,18 +107,17 @@
         <div class="form-section-title-wkr" style="margin-top:1.5rem;">Skills & Experience</div>
 
         <div class="form-group">
-          <label for="skills">Skills *</label>
-          <input
-            type="text"
-            id="skills"
-            name="skills"
-            class="form-control"
-            placeholder="e.g. Gardening, Painting, Tiling, Cleaning, Driving (comma-separated)"
-            required
-            maxlength="500"
-            value="{{ profile.skills if profile else '' }}"
-          >
-          <div class="form-hint">List your skills separated by commas. Be specific and honest.</div>
+          <label>Skills * <span style="font-weight:400; color:#999; font-size:0.8rem;">(select all that apply)</span></label>
+          <div class="skills-grid">
+            {% for skill in all_skills %}
+            <label class="skill-pill {% if skill.id in selected_ids %}checked{% endif %}">
+              <input type="checkbox" name="skill_ids" value="{{ skill.id }}"
+                {% if skill.id in selected_ids %}checked{% endif %}>
+              {{ skill.name }}
+            </label>
+            {% endfor %}
+          </div>
+          <div class="form-hint">Select at least one skill. You can select multiple.</div>
         </div>
 
         <div class="form-group">

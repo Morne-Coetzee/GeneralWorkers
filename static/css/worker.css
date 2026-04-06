@@ -290,3 +290,54 @@
   height: 40px;
   padding: 0 0.85rem;
 }
+
+/* ── Skills pill grid ──────────────────────────────────────────────────────── */
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1.5px solid var(--light-2);
+  border-radius: var(--radius-md);
+  background: #fafafa;
+}
+
+.skill-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border: 1.5px solid var(--light-2);
+  border-radius: 99px;
+  background: white;
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--dark-2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.skill-pill input[type="checkbox"] {
+  display: none;
+}
+
+.skill-pill:hover {
+  border-color: var(--wkr-main);
+  color: var(--wkr-dark-1);
+  background: var(--wkr-light-3);
+}
+
+.skill-pill.checked,
+.skill-pill:has(input:checked) {
+  border-color: var(--wkr-dark-1);
+  background: var(--wkr-dark-1);
+  color: white;
+}
+
+.skill-pill.checked::before,
+.skill-pill:has(input:checked)::before {
+  content: '✓ ';
+  font-size: 0.75rem;
+}

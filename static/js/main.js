@@ -134,3 +134,17 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
 });
+
+// ── Skill pill toggle (fallback for browsers without :has()) ─────────────
+document.querySelectorAll('.skill-pill').forEach(function(pill) {
+  var cb = pill.querySelector('input[type="checkbox"]');
+  if (!cb) return;
+  function sync() {
+    pill.classList.toggle('checked', cb.checked);
+  }
+  sync();
+  pill.addEventListener('click', function() {
+    cb.checked = !cb.checked;
+    sync();
+  });
+});

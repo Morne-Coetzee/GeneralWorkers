@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 
 from app.database import get_db
-from app.models import User, JobPosting, WorkerProfile, JobApplication
+from app.models import User, JobPosting, WorkerProfile, JobApplication, Skill
 
 router = APIRouter(prefix="/worker", tags=["worker"])
 
@@ -73,12 +73,16 @@ async def profile_page(request: Request, db: Session = Depends(get_db)):
         return RedirectResponse(url="/login", status_code=302)
 
     profile = db.query(WorkerProfile).filter(WorkerProfile.worker_id == user.id).first()
+    all_skills = db.query(Skill).order_by(Skill.name).all()
+    selected_ids = {s.id for s in profile.skills} if profile else set()
     flash_success = request.session.pop("flash_success", None)
     flash_error = request.session.pop("flash_error", None)
 
     return templates.TemplateResponse(request, "worker/create_profile.html", {
         "user": user,
         "profile": profile,
+        "all_skills": all_skills,
+        "selected_ids": selected_ids,
         "flash_success": flash_success,
         "flash_error": flash_error,
     })
@@ -88,16 +92,22 @@ async def profile_page(request: Request, db: Session = Depends(get_db)):
 async def save_profile(
     request: Request,
     bio: str = Form(""),
-    skills: str = Form(...),
     experience: str = Form(""),
     availability: str = Form(...),
     preferred_job_type: str = Form(...),
-    is_available: str = Form("on"),
+    is_available: str = Form("off"),
     db: Session = Depends(get_db)
 ):
     user = get_worker(request, db)
     if not user:
         return RedirectResponse(url="/login", status_code=302)
+
+    form = await request.form()
+    skill_ids = [int(v) for v in form.getlist("skill_ids") if v.isdigit()]
+
+    if not skill_ids:
+        request.session["flash_error"] = "Please select at least one skill."
+        return RedirectResponse(url="/worker/profile", status_code=302)
 
     if availability not in ("immediately", "within-week", "within-month"):
         request.session["flash_error"] = "Invalid availability option."
@@ -107,25 +117,26 @@ async def save_profile(
         request.session["flash_error"] = "Invalid job type preference."
         return RedirectResponse(url="/worker/profile", status_code=302)
 
+    selected_skills = db.query(Skill).filter(Skill.id.in_(skill_ids)).all()
     available = is_available == "on"
 
     profile = db.query(WorkerProfile).filter(WorkerProfile.worker_id == user.id).first()
     if profile:
         profile.bio = bio.strip() or None
-        profile.skills = skills.strip()
         profile.experience = experience.strip() or None
         profile.availability = availability
         profile.preferred_job_type = preferred_job_type
         profile.is_available = available
+        profile.skills = selected_skills
     else:
         profile = WorkerProfile(
             worker_id=user.id,
             bio=bio.strip() or None,
-            skills=skills.strip(),
             experience=experience.strip() or None,
             availability=availability,
             preferred_job_type=preferred_job_type,
             is_available=available,
+            skills=selected_skills,
         )
         db.add(profile)
 

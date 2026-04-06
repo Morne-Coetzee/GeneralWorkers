@@ -6,7 +6,7 @@ from fastapi.responses import RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
 from dotenv import load_dotenv
 
-from app.database import engine, Base
+from app.database import engine, Base, SessionLocal
 from app.routers import auth, employer, worker
 
 load_dotenv()
@@ -14,27 +14,46 @@ load_dotenv()
 # Create DB tables on startup
 Base.metadata.create_all(bind=engine)
 
+# Seed default skills
+SKILLS = [
+    "Painting", "Plastering", "Tiling", "Carpentry", "Plumbing",
+    "Electrical Work", "Bricklaying", "Welding", "Gardening & Landscaping",
+    "Cleaning", "Driving (Code 8)", "Driving (Code 10)", "Driving (Code 14)",
+    "Moving & Removals", "Construction & Labouring", "Roofing", "Paving",
+    "Waterproofing", "Security", "Domestic Work", "Cooking & Catering",
+    "Childcare", "Elder Care", "Car Washing & Valeting", "Pest Control",
+    "Pool Maintenance", "Fencing", "Excavation & Digging", "Waste Removal",
+    "General Maintenance",
+]
+
+def seed_skills():
+    from app.models import Skill
+    db = SessionLocal()
+    try:
+        if db.query(Skill).count() == 0:
+            db.bulk_insert_mappings(Skill, [{"name": s} for s in SKILLS])
+            db.commit()
+    finally:
+        db.close()
+
+seed_skills()
+
 app = FastAPI(title="GeneralWorkers", description="Connecting workers with employers")
 
-# Session middleware (must be added before routes)
 SECRET_KEY = os.getenv("SECRET_KEY", "change-this-secret-key-in-production")
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 
-# Static files
 app.mount(
     "/static",
     StaticFiles(directory=os.path.join(os.path.dirname(__file__), "..", "static")),
     name="static",
 )
 
-# Templates
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "templates"))
 
-# Routers
 app.include_router(auth.router)
 app.include_router(employer.router)
 app.include_router(worker.router)
-
 
 GOOGLE_MAPS_API_KEY = os.getenv("GOOGLE_MAPS_API_KEY", "")
 

@@ -1,7 +1,24 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Text, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database import Base
+
+# Many-to-many: worker_profiles ↔ skills
+worker_skills = Table(
+    "worker_skills",
+    Base.metadata,
+    Column("worker_profile_id", Integer, ForeignKey("worker_profiles.id"), primary_key=True),
+    Column("skill_id", Integer, ForeignKey("skills.id"), primary_key=True),
+)
+
+
+class Skill(Base):
+    __tablename__ = "skills"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(100), unique=True, nullable=False, index=True)
+
+    workers = relationship("WorkerProfile", secondary=worker_skills, back_populates="skills")
 
 
 class User(Base):
@@ -49,7 +66,6 @@ class WorkerProfile(Base):
     id = Column(Integer, primary_key=True, index=True)
     worker_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True)
     bio = Column(Text, nullable=True)
-    skills = Column(Text, nullable=False)  # comma-separated
     experience = Column(Text, nullable=True)
     availability = Column(String(50), nullable=False)  # "immediately", "within-week", "within-month"
     preferred_job_type = Column(String(50), nullable=False)
@@ -58,6 +74,7 @@ class WorkerProfile(Base):
 
     # Relationships
     worker = relationship("User", back_populates="worker_profile", foreign_keys=[worker_id])
+    skills = relationship("Skill", secondary=worker_skills, back_populates="workers")
 
 
 class JobApplication(Base):
